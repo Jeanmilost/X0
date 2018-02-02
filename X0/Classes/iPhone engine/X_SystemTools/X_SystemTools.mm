@@ -53,7 +53,7 @@
     unsigned long long physicalMemory = [pSystemInfo physicalMemory];
 
     // try to convert memory in GB
-    unsigned memory = physicalMemory / (1024 * 1024 * 1024);
+    unsigned memory = (unsigned)physicalMemory / (1024 * 1024 * 1024);
 
     // conversion succeeded?
     if (memory >= 1)
@@ -61,7 +61,7 @@
         return [[[NSString alloc]initWithFormat:@"%d GB", memory]autorelease];
 
     // try to convert memory in MB
-    memory = physicalMemory / (1024 * 1024);
+    memory = (unsigned)physicalMemory / (1024 * 1024);
 
     // conversion succeeded?
     if (memory >= 1)
@@ -69,7 +69,7 @@
         return [[[NSString alloc]initWithFormat:@"%d MB", memory]autorelease];
 
     // try to convert memory in KB
-    memory = physicalMemory / 1024;
+    memory = (unsigned)physicalMemory / 1024;
 
     // conversion succeeded?
     if (memory >= 1)

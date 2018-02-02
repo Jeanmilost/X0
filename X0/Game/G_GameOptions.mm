@@ -17,6 +17,7 @@
 @synthesize m_Player2Pawn;
 @synthesize m_PlayAgainstComputer;
 @synthesize m_ComputerBegins;
+@synthesize m_AILevel;
 //------------------------------------------------------------------------------
 - (id) init
 {
@@ -27,6 +28,7 @@
         m_Player2Pawn         = G_Gameboard::IE_Pa_Round;
         m_PlayAgainstComputer = true;
         m_ComputerBegins      = false;
+        m_AILevel             = 2;
 
         if (self = [super init])
         {}
@@ -78,6 +80,16 @@
                     m_ComputerBegins = (data[i] == '1');
                     break;
 
+                case 3:
+                {
+                    std::string aiLevel;
+                                aiLevel = data[i];
+
+                    // artificial intelligency level
+                    m_AILevel = std::atoi(aiLevel.c_str());
+                    break;
+                }
+
                 default:
                     break;
             }
@@ -99,6 +111,7 @@
         sstr << (m_Player1Pawn == G_Gameboard::IE_Pa_Round ? "1" : "0");
         sstr << (m_PlayAgainstComputer                     ? "1" : "0");
         sstr << (m_ComputerBegins                          ? "1" : "0");
+        sstr << m_AILevel;
 
         // get options file name and contents
         NSString* pFileName = [X_StringTools StrToNSStr:fileName];

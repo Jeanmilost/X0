@@ -57,7 +57,12 @@
 		1D927D8017E613E1000426DE /* X_ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1D927D7B17E613E1000426DE /* X_ViewController.xib */; };
 		C4012AE317E6699200188D3D /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = C4012AE017E6699200188D3D /* icon.png */; };
 		C4012AE417E6699200188D3D /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4012AE117E6699200188D3D /* icon@2x.png */; };
-		C4012AE717E669F600188D3D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4012ADF17E6699200188D3D /* Default-568h@2x.png */; };
+		C4E4436018BD56F7006C8C84 /* X0_Icon_29x29.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E4435D18BD56F7006C8C84 /* X0_Icon_29x29.png */; };
+		C4E4436118BD56F7006C8C84 /* X0_Icon_58x58.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E4435E18BD56F7006C8C84 /* X0_Icon_58x58.png */; };
+		C4E4436218BD56F7006C8C84 /* X0_Icon_80x80.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E4435F18BD56F7006C8C84 /* X0_Icon_80x80.png */; };
+		C4E6914818BD58F700995A3B /* X0_Icon_120x120.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E6914718BD58F700995A3B /* X0_Icon_120x120.png */; };
+		C4E6914A18BD599400995A3B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E6914918BD599400995A3B /* Default-568h@2x.png */; };
+		C4E6914C18BD59F600995A3B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E6914B18BD59F600995A3B /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -137,9 +142,14 @@
 		1D927D7817E613E1000426DE /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = Localizable.strings; sourceTree = "<group>"; };
 		1D927D7A17E613E1000426DE /* pt */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = pt; path = X_OptionViewController.xib; sourceTree = "<group>"; };
 		1D927D7C17E613E1000426DE /* pt */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = pt; path = X_ViewController.xib; sourceTree = "<group>"; };
-		C4012ADF17E6699200188D3D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		C4012AE017E6699200188D3D /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		C4012AE117E6699200188D3D /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		C4E4435D18BD56F7006C8C84 /* X0_Icon_29x29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = X0_Icon_29x29.png; sourceTree = "<group>"; };
+		C4E4435E18BD56F7006C8C84 /* X0_Icon_58x58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = X0_Icon_58x58.png; sourceTree = "<group>"; };
+		C4E4435F18BD56F7006C8C84 /* X0_Icon_80x80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = X0_Icon_80x80.png; sourceTree = "<group>"; };
+		C4E6914718BD58F700995A3B /* X0_Icon_120x120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = X0_Icon_120x120.png; sourceTree = "<group>"; };
+		C4E6914918BD599400995A3B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		C4E6914B18BD59F600995A3B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +169,7 @@
 		1D081B4F17E6107300CF411F = {
 			isa = PBXGroup;
 			children = (
+				C4E6914918BD599400995A3B /* Default-568h@2x.png */,
 				1D081B6417E6107300CF411F /* X0 */,
 				1D927D1317E611CA000426DE /* Resources */,
 				1D081B5D17E6107300CF411F /* Frameworks */,
@@ -468,9 +479,13 @@
 				1D927D1517E611CA000426DE /* cross.png */,
 				1D927D1617E611CA000426DE /* cross_small.png */,
 				1D927D1717E611CA000426DE /* cross_small_selected.png */,
-				C4012ADF17E6699200188D3D /* Default-568h@2x.png */,
+				C4E6914B18BD59F600995A3B /* Default-568h@2x.png */,
 				C4012AE017E6699200188D3D /* icon.png */,
 				C4012AE117E6699200188D3D /* icon@2x.png */,
+				C4E4435D18BD56F7006C8C84 /* X0_Icon_29x29.png */,
+				C4E4435E18BD56F7006C8C84 /* X0_Icon_58x58.png */,
+				C4E4435F18BD56F7006C8C84 /* X0_Icon_80x80.png */,
+				C4E6914718BD58F700995A3B /* X0_Icon_120x120.png */,
 				1D927D1917E611CA000426DE /* playfield.png */,
 				1D927D1A17E611CA000426DE /* round.png */,
 				1D927D1B17E611CA000426DE /* round_small.png */,
@@ -548,7 +563,12 @@
 		1D081B5117E6107300CF411F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0500;
+				TargetAttributes = {
+					1D081B5917E6107300CF411F = {
+						DevelopmentTeam = ZJFX679U22;
+					};
+				};
 			};
 			buildConfigurationList = 1D081B5417E6107300CF411F /* Build configuration list for PBXProject "X0" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -583,19 +603,24 @@
 				1D927D5217E611CA000426DE /* round_small_selected.png in Resources */,
 				1D927D6317E613CF000426DE /* InfoPlist.strings in Resources */,
 				1D927D6417E613CF000426DE /* Localizable.strings in Resources */,
+				C4E6914A18BD599400995A3B /* Default-568h@2x.png in Resources */,
 				1D927D6517E613CF000426DE /* X_OptionViewController.xib in Resources */,
+				C4E6914C18BD59F600995A3B /* Default-568h@2x.png in Resources */,
 				1D927D6617E613CF000426DE /* X_ViewController.xib in Resources */,
 				1D927D7017E613D8000426DE /* InfoPlist.strings in Resources */,
 				1D927D7117E613D8000426DE /* Localizable.strings in Resources */,
 				1D927D7217E613D8000426DE /* X_OptionViewController.xib in Resources */,
 				1D927D7317E613D8000426DE /* X_ViewController.xib in Resources */,
+				C4E4436018BD56F7006C8C84 /* X0_Icon_29x29.png in Resources */,
+				C4E6914818BD58F700995A3B /* X0_Icon_120x120.png in Resources */,
 				1D927D7D17E613E1000426DE /* InfoPlist.strings in Resources */,
 				1D927D7E17E613E1000426DE /* Localizable.strings in Resources */,
 				1D927D7F17E613E1000426DE /* X_OptionViewController.xib in Resources */,
+				C4E4436218BD56F7006C8C84 /* X0_Icon_80x80.png in Resources */,
 				1D927D8017E613E1000426DE /* X_ViewController.xib in Resources */,
 				C4012AE317E6699200188D3D /* icon.png in Resources */,
 				C4012AE417E6699200188D3D /* icon@2x.png in Resources */,
-				C4012AE717E669F600188D3D /* Default-568h@2x.png in Resources */,
+				C4E4436118BD56F7006C8C84 /* X0_Icon_58x58.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,8 +766,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -757,12 +783,16 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_MISSING_PARENTHESES = NO;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -771,8 +801,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -780,12 +811,15 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_MISSING_PARENTHESES = NO;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -795,12 +829,15 @@
 		1D081B7917E6107300CF411F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "X0/X0-Prefix.pch";
 				GCC_WARN_MISSING_PARENTHESES = NO;
 				INFOPLIST_FILE = "X0/X0-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -808,8 +845,8 @@
 		1D081B7A17E6107300CF411F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "X0/X0-Prefix.pch";
 				GCC_WARN_MISSING_PARENTHESES = NO;

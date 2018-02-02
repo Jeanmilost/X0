@@ -15,12 +15,14 @@
         G_Gameboard::IEPawn m_Player2Pawn;
         bool                m_PlayAgainstComputer;
         bool                m_ComputerBegins;
+        unsigned            m_AILevel;
 }
 
 @property (nonatomic, assign) G_Gameboard::IEPawn m_Player1Pawn;
 @property (nonatomic, assign) G_Gameboard::IEPawn m_Player2Pawn;
 @property (nonatomic, assign) bool                m_PlayAgainstComputer;
 @property (nonatomic, assign) bool                m_ComputerBegins;
+@property (nonatomic, assign) unsigned            m_AILevel;
 
 /**
 * Initialize class

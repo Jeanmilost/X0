@@ -14,8 +14,15 @@
 //------------------------------------------------------------------------------
 // G_Gameboard::ICell
 //------------------------------------------------------------------------------
-G_Gameboard::ICell::ICell() : m_Pawn(IE_Pa_None), m_X(0), m_Y(0), m_PlayerCanWinOnNextMove(false),
-        m_ComputerCanWinOnNextMove(false), m_OffensivePoint(0), m_DefensivePoint(0)
+G_Gameboard::ICell::ICell() :
+    m_Pawn(IE_Pa_None),
+    m_X(0),
+    m_Y(0),
+    m_PlayerCanWinOnNextMove(false),
+    m_ComputerCanWinOnNextMove(false),
+    m_CanTrapOnNextMove(false),
+    m_OffensiveScore(0),
+    m_DefensiveScore(0)
 {}
 //------------------------------------------------------------------------------
 void G_Gameboard::ICell::Reset()
@@ -23,8 +30,9 @@ void G_Gameboard::ICell::Reset()
     m_Pawn                     = IE_Pa_None;
     m_PlayerCanWinOnNextMove   = false;
     m_ComputerCanWinOnNextMove = false;
-    m_OffensivePoint           = 0;
-    m_DefensivePoint           = 0;
+    m_CanTrapOnNextMove        = false;
+    m_OffensiveScore           = 0;
+    m_DefensiveScore           = 0;
 }
 //------------------------------------------------------------------------------
 bool G_Gameboard::ICell::IsOnLeftDiagonal() const
@@ -39,8 +47,14 @@ bool G_Gameboard::ICell::IsOnRightDiagonal() const
 //------------------------------------------------------------------------------
 // G_Gameboard
 //------------------------------------------------------------------------------
-G_Gameboard::G_Gameboard() : m_Player(IE_Pl_Player1), m_Player1Pawn(IE_Pa_Cross),
-        m_Player2Pawn(IE_Pa_Round), m_Player2IsComputer(true), m_fOnPlayed(NULL)
+G_Gameboard::G_Gameboard() :
+    m_AILevel(IE_AI_Normal),
+    m_Player(IE_Pl_Player1),
+    m_Player1Pawn(IE_Pa_Cross),
+    m_Player2Pawn(IE_Pa_Round),
+    m_Player2IsComputer(true),
+    m_LastPlayedIndex(-1),
+    m_fOnPlayed(NULL)
 {
     // iterate through gameboard columns and lines
     for (unsigned i = 0; i < M_GameboardHeight; ++i)
@@ -62,6 +76,14 @@ void G_Gameboard::Reset()
     for (unsigned i = 0; i < m_Cells.size(); ++i)
         // reset cell
         m_Cells[i].Reset();
+
+    // reset player
+    m_Player = IE_Pl_Player1;
+}
+//------------------------------------------------------------------------------
+void G_Gameboard::SetAI(IEAILevel level)
+{
+    m_AILevel = level;
 }
 //------------------------------------------------------------------------------
 bool G_Gameboard::IsEmpty(unsigned x, unsigned y)
@@ -135,56 +157,115 @@ void G_Gameboard::SetComputerMove(IEPlayer computerPlayer)
     // first checks
     // - check if player will win on next row and block it if yes
     // - check if can win on next row and close line if yes
+    // - check if player can trap the computer
     //
     // then, for each cell
-    // - add 1 offensive point for each open line (i.e. containing no pawns)
-    // - add 2 offensive points for each line already containing a computer pawn
-    // - add 1 defensive point for each line containing an ennemy pawn
-    // iterate through cells
-
-    // wait 1 second because otherwise computer plays too quickly
-    //::sleep(1);
+    // - increase offensive score by 1 for each open line (i.e. containing no pawns)
+    // - increase offensive score by 2 for each line already containing a computer pawn
+    // - increase defensive score by 1 for each line containing a player pawn
 
     // get computer pawn
     IEPawn computerPawn = (computerPlayer == IE_Pl_Player1) ? m_Player1Pawn : m_Player2Pawn;
 
-    // iterate through cells
-    for (unsigned i = 0; i < m_Cells.size(); ++i)
-    {
-        // get cell
-        ICell* pCell = GetCell(i);
-
-        // calculate points on current cell
-        CalculatePoints(pCell, computerPawn);
-    }
-
-    unsigned maxPoint = 0;
-
-    // iterate through cells
-    for (unsigned i = 0; i < m_Cells.size(); ++i)
-    {
-        // get cell
-        ICell* pCell = GetCell(i);
-        
-        // calculate points on current cell and get max
-        maxPoint = std::max(pCell->m_OffensivePoint + pCell->m_DefensivePoint, maxPoint);
-    }
-
+    // get empty cell count
+    unsigned emptyCellCount = GetEmptyCellCount();
+    
     std::vector<ICell*> cells;
-    ICell*              pDangerousCell = NULL;
+
+    // is AI disabled or do open extra-hard game?
+    if (m_AILevel == IE_AI_None || (m_AILevel == IE_AI_ExtraHard && emptyCellCount == 9))
+    {
+        // iterate through cells
+        for (unsigned i = 0; i < m_Cells.size(); ++i)
+        {
+            // get cell
+            ICell* pCell = GetCell(i);
+
+            // is cell free?
+            if (pCell->m_Pawn == IE_Pa_None)
+                cells.push_back(pCell);
+        }
+
+        // select cell to play
+        SelectCell(cells, computerPlayer, computerPawn, emptyCellCount);
+
+        return;
+    }
+
+    // is AI at max level?
+    if (m_AILevel == IE_AI_ExtraHard)
+    {
+        ICell* pBestCell = NULL;
+
+        // get best cell for computer
+        MiniMax(computerPlayer, pBestCell);
+
+        //get next move
+        pBestCell->m_Pawn = computerPawn;
+
+        return;
+    }
 
     // iterate through cells
     for (unsigned i = 0; i < m_Cells.size(); ++i)
     {
         // get cell
         ICell* pCell = GetCell(i);
+
+        // calculate score on current cell
+        CalculateScore(pCell, computerPawn, emptyCellCount);
+    }
+
+    unsigned maxScore = 0;
+
+    // iterate through cells
+    for (unsigned i = 0; i < m_Cells.size(); ++i)
+    {
+        // get cell
+        ICell* pCell = GetCell(i);
+
+        // calculate score on current cell and get max
+        maxScore = std::max(pCell->m_OffensiveScore + pCell->m_DefensiveScore, maxScore);
+    }
+
+    ICell* pDangerousCell = NULL;
+
+    // iterate through cells
+    for (unsigned i = 0; i < m_Cells.size(); ++i)
+    {
+        // get cell
+        ICell* pCell = GetCell(i);
+
+        // opponent can trap the computer?
+        if (m_AILevel >= IE_AI_Hard && pCell->m_CanTrapOnNextMove)
+        {
+            // get position to play to block trap
+            unsigned posX = (!pCell->m_X ? 2 : 0);
+            unsigned posY = (!pCell->m_Y ? 2 : 0);
+            
+            // get cell to play
+            ICell* pCellToPlay = GetCell(posX, posY);
+            
+            // found it?
+            if (!pCellToPlay)
+                continue;
+            
+            // block trap
+            pCellToPlay->m_Pawn = computerPawn;
+            
+            // notify that computer has played
+            if (m_fOnPlayed)
+                m_fOnPlayed(computerPlayer, computerPawn, true);
+            
+            return;
+        }
 
         // cell contains pawn?
         if (pCell->m_Pawn != IE_Pa_None)
             continue;
 
-        // computer or player can win on next move, or cell contains most points?
-        if (pCell->m_ComputerCanWinOnNextMove)
+        // computer or player can win on next move or cell contains highest score?
+        if (m_AILevel >= IE_AI_Normal && pCell->m_ComputerCanWinOnNextMove)
         {
             // computer can win on next move, set computer pawn in cell
             pCell->m_Pawn = computerPawn;
@@ -196,15 +277,15 @@ void G_Gameboard::SetComputerMove(IEPlayer computerPlayer)
             return;
         }
         else
-        if (pCell->m_PlayerCanWinOnNextMove)
+        if (m_AILevel >= IE_AI_Normal && pCell->m_PlayerCanWinOnNextMove)
         {
             // player can win on next move, keep it
             pDangerousCell = pCell;
             continue;
         }
         else
-        if (pCell->m_OffensivePoint + pCell->m_DefensivePoint == maxPoint)
-            // cell contains most points, keep it as candidate for next move
+        if (pCell->m_OffensiveScore + pCell->m_DefensiveScore == maxScore)
+            // cell contains highest score, keep it as candidate for next move
             cells.push_back(pCell);
     }
 
@@ -221,24 +302,8 @@ void G_Gameboard::SetComputerMove(IEPlayer computerPlayer)
         return;
     }
 
-    // no cell selected for next move, only one cell is possible, or there are many cells?
-    if (!cells.size())
-        // no cell, nothing to do
-        return;
-    else
-    if (cells.size() == 1)
-        // only one cell, set pawn into
-        cells[0]->m_Pawn = computerPawn;
-    else
-    {
-        // many cells, select one randomly
-        E_Random::Initialize();
-        cells[E_Random::GetNumber(cells.size() - 1)]->m_Pawn = computerPawn;
-    }
-
-    // notify that computer has played
-    if (m_fOnPlayed)
-        m_fOnPlayed(computerPlayer, computerPawn, true);
+    // select cell to play
+    SelectCell(cells, computerPlayer, computerPawn, emptyCellCount);
 }
 //------------------------------------------------------------------------------
 G_Gameboard::ICell* G_Gameboard::GetCell(unsigned x, unsigned y)
@@ -341,7 +406,51 @@ void G_Gameboard::Set_OnPlayed(ITfOnPlayed fHandler)
     m_fOnPlayed = fHandler;
 }
 //------------------------------------------------------------------------------
-void G_Gameboard::CalculatePoints(ICell* pCell, IEPawn pawn)
+void G_Gameboard::SelectCell(const std::vector<ICell*>& cells, IEPlayer computerPlayer, IEPawn computerPawn,
+        unsigned emptyCellCount)
+{
+    // no cell selected for next move, only one cell is possible, or there are many cells?
+    if (!cells.size())
+        // no cell, nothing to do
+        return;
+    else
+    if (cells.size() == 1)
+        // only one cell, set pawn into
+        cells[0]->m_Pawn = computerPawn;
+    else
+    {
+        E_Random::Initialize();
+
+        bool   canUse;
+        ICell* pCellToPlay;
+
+        do
+        {
+            // many cells, select one randomly
+            unsigned index = E_Random::GetNumber(9999) % (cells.size() - 1);
+
+            // get next cell to play
+            pCellToPlay = cells[index];
+
+            // can use cell?
+            canUse = emptyCellCount < 8 ||
+                     (((pCellToPlay->m_Y * M_GameboardWidth) + pCellToPlay->m_X) != m_LastPlayedIndex);
+        }
+        while (!canUse);
+
+        if (emptyCellCount >= 8)
+            m_LastPlayedIndex = ((pCellToPlay->m_Y * M_GameboardWidth) + pCellToPlay->m_X);
+
+        // set computer pawn
+        pCellToPlay->m_Pawn = computerPawn;
+    }
+
+    // notify that computer has played
+    if (m_fOnPlayed)
+        m_fOnPlayed(computerPlayer, computerPawn, true);
+}
+//------------------------------------------------------------------------------
+void G_Gameboard::CalculateScore(ICell* pCell, IEPawn pawn, unsigned emptyCellCount)
 {
     // no cell?
     if (!pCell)
@@ -350,12 +459,20 @@ void G_Gameboard::CalculatePoints(ICell* pCell, IEPawn pawn)
     // reset cell
     pCell->m_PlayerCanWinOnNextMove   = false;
     pCell->m_ComputerCanWinOnNextMove = false;
-    pCell->m_OffensivePoint           = 0;
-    pCell->m_DefensivePoint           = 0;
+    pCell->m_CanTrapOnNextMove        = false;
+    pCell->m_OffensiveScore           = 0;
+    pCell->m_DefensiveScore           = 0;
 
     // is cell already occupied?
     if (pCell->m_Pawn != IE_Pa_None)
+    {
+        // check if computer can be trapped 
+        if (emptyCellCount == 8 && pCell->m_Pawn != IE_Pa_None && (pCell->m_X == 0 || pCell->m_X == 2)
+                && (pCell->m_Y == 0 || pCell->m_Y == 2))
+            pCell->m_CanTrapOnNextMove = true;
+
         return;
+    }
 
     unsigned playerHoriz       = 0;
     unsigned playerVert        = 0;
@@ -437,37 +554,37 @@ void G_Gameboard::CalculatePoints(ICell* pCell, IEPawn pawn)
             || (computerRDiagonal == 2 && freeRDiagonal == 1))
         pCell->m_ComputerCanWinOnNextMove = true;
 
-    // calculate offensive points on horizontal line
+    // calculate offensive score on horizontal line
     if (computerHoriz == 1 && freeHoriz == 2)
-        ++pCell->m_OffensivePoint;
+        ++pCell->m_OffensiveScore;
 
-    // calculate offensive points on vertical line
+    // calculate offensive score on vertical line
     if (computerVert == 1 && freeVert == 2)
-        ++pCell->m_OffensivePoint;
+        ++pCell->m_OffensiveScore;
 
-    // calculate offensive points on left diagonal line
+    // calculate offensive score on left diagonal line
     if (computerLDiagonal == 1 && freeLDiagonal == 2)
-        ++pCell->m_OffensivePoint;
+        ++pCell->m_OffensiveScore;
 
-    // calculate offensive points on right diagonal line
+    // calculate offensive score on right diagonal line
     if (computerRDiagonal == 1 && freeRDiagonal == 2)
-        ++pCell->m_OffensivePoint;
+        ++pCell->m_OffensiveScore;
 
-    // calculate defensive points on horizontal line
+    // calculate defensive score on horizontal line
     if (playerHoriz == 1 && freeHoriz == 2)
-        ++pCell->m_DefensivePoint;
+        ++pCell->m_DefensiveScore;
 
-    // calculate defensive points on vertical line
+    // calculate defensive score on vertical line
     if (playerVert == 1 && freeVert == 2)
-        ++pCell->m_DefensivePoint;
+        ++pCell->m_DefensiveScore;
 
-    // calculate defensive points on left diagonal line
+    // calculate defensive score on left diagonal line
     if (playerLDiagonal == 1 && freeLDiagonal == 2)
-        ++pCell->m_DefensivePoint;
+        ++pCell->m_DefensiveScore;
 
-    // calculate defensive points on right diagonal line
+    // calculate defensive score on right diagonal line
     if (playerRDiagonal == 1 && freeRDiagonal == 2)
-        ++pCell->m_DefensivePoint;
+        ++pCell->m_DefensiveScore;
 }
 //------------------------------------------------------------------------------
 bool G_Gameboard::IsOnCompleteLine(const ICell* pCell, IEPawn pawn)
@@ -510,5 +627,126 @@ bool G_Gameboard::IsOnCompleteLine(const ICell* pCell, IEPawn pawn)
 
     // a line is complete if all cells of line, column or diagonal contains same pawn
     return (horiz == 3 || vert == 3 || rDiagonal == 3 || lDiagonal == 3);
+}
+//------------------------------------------------------------------------------
+unsigned G_Gameboard::GetEmptyCellCount()
+{
+    unsigned emptyCellCount = 0;
+
+    // iterate through cells
+    for (unsigned i = 0; i < m_Cells.size(); ++i)
+    {
+        // get cell to check
+        ICell* pCellToCheck = GetCell(i);
+    
+        // found it?
+        if (!pCellToCheck)
+            continue;
+
+        // is cell empty?
+        if (pCellToCheck->m_Pawn == IE_Pa_None)
+            ++emptyCellCount;
+    }
+
+    return emptyCellCount;
+}
+//------------------------------------------------------------------------------
+int G_Gameboard::MiniMax(IEPlayer player, ICell*& pBestCell, int deep)
+{
+    // calculate min and max sum
+    int sum = (1 << 20);
+    int max = -sum;
+    int min =  sum;
+
+    // any player has win?
+    IEPlayer winner = HasWin();
+
+    // is game over?
+    if (winner == IE_Pl_Player1)
+        return IE_Pl_Player1;
+    else
+    if (winner == IE_Pl_Player2)
+        return IE_Pl_Player2;
+    else
+    if (IsGameOver())
+        return 0;
+
+    // iterate through cells
+    for (unsigned i = 0; i < m_Cells.size(); ++i)
+    {
+        // get cell to check
+        ICell* pCell = GetCell(i);
+
+        // found it?
+        if (!pCell)
+            continue;
+
+        // is cell already occupied?
+        if (pCell->m_Pawn != IE_Pa_None)
+            continue;
+
+        // search for player to check
+        switch (player)
+        {
+            case IE_Pl_Player1:
+            {
+                // simulate player 1 move
+                pCell->m_Pawn = m_Player1Pawn;
+
+                // check next opposite player move
+                int result = MiniMax(IE_Pl_Player2, pBestCell, deep + 1);
+
+                // revert cell to original value
+                pCell->m_Pawn = IE_Pa_None;
+
+                // do update max?
+                if (result > max)
+                {
+                    max = result;
+
+                    // first level?
+                    if (!deep)
+                        // get best cell
+                        pBestCell = pCell;
+                }
+
+                continue;
+            }
+
+            case IE_Pl_Player2:
+            {
+                // simulate player 2 move
+                pCell->m_Pawn = m_Player2Pawn;
+
+                // check next opposite player move
+                int result = MiniMax(IE_Pl_Player1, pBestCell, deep + 1);
+
+                // revert cell to original value
+                pCell->m_Pawn = IE_Pa_None;
+
+                // do update min?
+                if (result < min)
+                {
+                    min = result;
+
+                    // first level?
+                    if (!deep)
+                        // get best cell
+                        pBestCell = pCell;
+                }
+
+                continue;
+            }
+
+            default:
+                continue;
+        }
+    }
+
+    // is player 1?
+    if (player == IE_Pl_Player1)
+        return max;
+
+    return min;
 }
 //------------------------------------------------------------------------------

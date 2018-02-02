@@ -5,8 +5,8 @@
  * Developer   : Jean-Milost Reymond                                          *
  ******************************************************************************/
 
-#ifndef Tic_Tac_Toe_G_Gameboard_h
-#define Tic_Tac_Toe_G_Gameboard_h
+#ifndef G_Gameboard_h
+#define G_Gameboard_h
 
 #include <vector>
 
@@ -22,9 +22,9 @@ class G_Gameboard
         */
         enum IEPlayer
         {
-            IE_Pl_None = 0,
-            IE_Pl_Player1,
-            IE_Pl_Player2,
+            IE_Pl_Player2 = -1,
+            IE_Pl_None    =  0,
+            IE_Pl_Player1 =  1,
         };
 
         /**
@@ -38,6 +38,18 @@ class G_Gameboard
         };
 
         /**
+        * Artificial intelligency level
+        */
+        enum IEAILevel
+        {
+            IE_AI_None = 0,
+            IE_AI_Easy,
+            IE_AI_Normal,
+            IE_AI_Hard,
+            IE_AI_ExtraHard,
+        };
+
+        /**
         * Gameboard cell
         */
         struct ICell
@@ -47,8 +59,9 @@ class G_Gameboard
             unsigned m_Y;
             bool     m_PlayerCanWinOnNextMove;
             bool     m_ComputerCanWinOnNextMove;
-            unsigned m_OffensivePoint;
-            unsigned m_DefensivePoint;
+            bool     m_CanTrapOnNextMove;
+            unsigned m_OffensiveScore;
+            unsigned m_DefensiveScore;
 
             /**
             * Constructor
@@ -93,6 +106,12 @@ class G_Gameboard
         * Resets gameboard to initial state
         */
         void Reset();
+
+        /**
+        * Set artificial intelligence level
+        *@param level - AI level
+        */
+        void SetAI(IEAILevel level);
 
         /**
         * Checks if cell is empty
@@ -186,18 +205,31 @@ class G_Gameboard
 
     private:
         ICells      m_Cells;
+        IEAILevel   m_AILevel;
         IEPlayer    m_Player;
         IEPawn      m_Player1Pawn;
         IEPawn      m_Player2Pawn;
         bool        m_Player2IsComputer;
+        int         m_LastPlayedIndex;
         ITfOnPlayed m_fOnPlayed;
 
         /**
-        * Calculates points on current cell, to determine next computer move
-        *@param - cell for which points should be calculated
-        *@param pawn - pawn used by computer
+        * Selects cell to play
+        *@param cells - cell list
+        *@param computerPlayer - player used by computer
+        *@param computerPawn - pawn used by computer
+        *@param emptyCellCount - empty cell count
         */
-        void CalculatePoints(ICell* pCell, IEPawn pawn);
+        void SelectCell(const std::vector<ICell*>& cells, IEPlayer computerPlayer, IEPawn computerPawn,
+                unsigned emptyCellCount);
+
+        /**
+        * Calculates score on current cell, to determine next computer move
+        *@param pCell - cell for which score should be calculated
+        *@param pawn - pawn used by computer
+        *@param emptyCellCount - empty cell count
+        */
+        void CalculateScore(ICell* pCell, IEPawn pawn, unsigned emptyCellCount);
 
         /**
         * Checks if cell containing pawn is on a complete line of same pawns
@@ -206,6 +238,21 @@ class G_Gameboard
         *@returns true if cell is on a complete line
         */
         bool IsOnCompleteLine(const ICell* pCell, IEPawn pawn);
+
+        /**
+        * Get empty cell count
+        *@returns empty cell count
+        */
+        unsigned GetEmptyCellCount();
+
+        /**
+        * Apply minimax algorithm to determine which is the best cell to move for player
+        *@param player - player for which best cell should be found
+        *@param pBestCell - best cell found
+        *@param deep - minimax deep
+        *@returns minimax score
+        */
+        int MiniMax(IEPlayer player, ICell*& pBestCell, int deep = 0);
 };
 
 #endif

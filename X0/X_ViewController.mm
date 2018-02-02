@@ -198,11 +198,19 @@
     {
         M_ASSERT(pImageView);
 
+        int deltaY;
+
+        // is iPhone 5 screen?
+        if ((int)[[UIScreen mainScreen]bounds].size.height == 568)
+            deltaY = 0;
+        else
+            deltaY = 14;
+
         CGRect imageFrame = pImageView.frame;
 
         E_Rectangle sensibleRect;
         sensibleRect.m_Left   = imageFrame.origin.x;
-        sensibleRect.m_Top    = imageFrame.origin.y;
+        sensibleRect.m_Top    = imageFrame.origin.y + deltaY;
         sensibleRect.m_Right  = sensibleRect.m_Left + imageFrame.size.width;
         sensibleRect.m_Bottom = sensibleRect.m_Top  + imageFrame.size.height;
 
@@ -235,6 +243,7 @@
             // update game options
             m_Gameboard.SetPlayer1Pawn(m_pOptions.m_Player1Pawn);
             m_Gameboard.SetPlayer2IsComputer(m_pOptions.m_PlayAgainstComputer);
+            m_Gameboard.SetAI((G_Gameboard::IEAILevel)m_pOptions.m_AILevel);
         }
 
         // release all images
@@ -778,6 +787,7 @@
             // update game options
             m_Gameboard.SetPlayer1Pawn(m_pOptions.m_Player1Pawn);
             m_Gameboard.SetPlayer2IsComputer(m_pOptions.m_PlayAgainstComputer);
+            m_Gameboard.SetAI((G_Gameboard::IEAILevel)m_pOptions.m_AILevel);
         }
     }
     M_CatchSilent

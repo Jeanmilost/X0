@@ -58,12 +58,13 @@
         if (m_pOptions)
         {
             // apply loaded options to interface
-            m_pPlayer1Cross.selected  = (m_pOptions.m_Player1Pawn == G_Gameboard::IE_Pa_Cross);
-            m_pPlayer1Round.selected  = !m_pPlayer1Cross.selected;
-            m_pPlayer2Cross.selected  = !m_pPlayer1Cross.selected;
-            m_pPlayer2Round.selected  = !m_pPlayer2Cross.selected;
-            m_pPlayAgainstComputer.on = m_pOptions.m_PlayAgainstComputer;
-            m_pComputerBegins.on      = m_pOptions.m_ComputerBegins;
+            m_pPlayer1Cross.selected           = (m_pOptions.m_Player1Pawn == G_Gameboard::IE_Pa_Cross);
+            m_pPlayer1Round.selected           = !m_pPlayer1Cross.selected;
+            m_pPlayer2Cross.selected           = !m_pPlayer1Cross.selected;
+            m_pPlayer2Round.selected           = !m_pPlayer2Cross.selected;
+            m_pPlayAgainstComputer.on          = m_pOptions.m_PlayAgainstComputer;
+            m_pComputerBegins.on               = m_pOptions.m_ComputerBegins;
+            m_pDifficulty.selectedSegmentIndex = m_pOptions.m_AILevel;
         }
     }
     M_CatchSilent
@@ -204,6 +205,7 @@
             // update options to save
             m_pOptions.m_PlayAgainstComputer = m_pPlayAgainstComputer.on;
             m_pOptions.m_ComputerBegins      = m_pComputerBegins.on;
+            m_pOptions.m_AILevel             = m_pDifficulty.selectedSegmentIndex;
 
             // save user options
             if (![m_pOptions Save])

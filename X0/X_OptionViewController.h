@@ -12,28 +12,28 @@
 @interface X_OptionViewController : UIViewController
 {
     @private
-        UIButton*      m_pPlayer1Cross;
-        UIButton*      m_pPlayer1Round;
-        UIButton*      m_pPlayer2Cross;
-        UIButton*      m_pPlayer2Round;
-        UIButton*      m_pCancel;
-        UIButton*      m_pSave;
-        UISwitch*      m_pPlayAgainstComputer;
-        UISwitch*      m_pComputerBegins;
-        UISlider*      m_pDifficulty;
-        X_Delegate*    m_pOnOptionsChangedDelegate;
-        G_GameOptions* m_pOptions;
+        UIButton*           m_pPlayer1Cross;
+        UIButton*           m_pPlayer1Round;
+        UIButton*           m_pPlayer2Cross;
+        UIButton*           m_pPlayer2Round;
+        UIButton*           m_pCancel;
+        UIButton*           m_pSave;
+        UISwitch*           m_pPlayAgainstComputer;
+        UISwitch*           m_pComputerBegins;
+        UISegmentedControl* m_pDifficulty;
+        X_Delegate*         m_pOnOptionsChangedDelegate;
+        G_GameOptions*      m_pOptions;
 }
 
-@property (nonatomic, retain) IBOutlet UIButton* m_pPlayer1Cross;
-@property (nonatomic, retain) IBOutlet UIButton* m_pPlayer1Round;
-@property (nonatomic, retain) IBOutlet UIButton* m_pPlayer2Cross;
-@property (nonatomic, retain) IBOutlet UIButton* m_pPlayer2Round;
-@property (nonatomic, retain) IBOutlet UIButton* m_pCancel;
-@property (nonatomic, retain) IBOutlet UIButton* m_pSave;
-@property (nonatomic, retain) IBOutlet UISwitch* m_pPlayAgainstComputer;
-@property (nonatomic, retain) IBOutlet UISwitch* m_pComputerBegins;
-@property (nonatomic, retain) IBOutlet UISlider* m_pDifficulty;
+@property (nonatomic, retain) IBOutlet UIButton*           m_pPlayer1Cross;
+@property (nonatomic, retain) IBOutlet UIButton*           m_pPlayer1Round;
+@property (nonatomic, retain) IBOutlet UIButton*           m_pPlayer2Cross;
+@property (nonatomic, retain) IBOutlet UIButton*           m_pPlayer2Round;
+@property (nonatomic, retain) IBOutlet UIButton*           m_pCancel;
+@property (nonatomic, retain) IBOutlet UIButton*           m_pSave;
+@property (nonatomic, retain) IBOutlet UISwitch*           m_pPlayAgainstComputer;
+@property (nonatomic, retain) IBOutlet UISwitch*           m_pComputerBegins;
+@property (nonatomic, retain) IBOutlet UISegmentedControl* m_pDifficulty;
 
 /**
 * Set game options
